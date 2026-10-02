@@ -145,6 +145,7 @@ public class AzureSecurityRealm extends SecurityRealm {
     private static final int NOT_FOUND = 404;
     private static final int BAD_REQUEST = 400;
     public static final String CONVERTER_DISABLE_GRAPH_INTEGRATION = "disableGraphIntegration";
+    public static final String CONVERTER_ENABLE_GRAPH_INTEGRATION_FOR_AVATARS = "enableGraphIntegrationForAvatars";
     public static final String CONVERTER_SINGLE_LOGOUT = "singleLogout";
     public static final String CONVERTER_PROMPT_ACCOUNT = "promptAccount";
     public static final String CONVERTER_DOMAIN_HINT = "domainHint";
@@ -162,6 +163,7 @@ public class AzureSecurityRealm extends SecurityRealm {
     private boolean promptAccount;
     private boolean singleLogout;
     private boolean disableGraphIntegration;
+    private boolean enableGraphIntegrationForAvatars;
     private String azureEnvironmentName = "Azure";
     private String credentialType = "Secret";
     private String domainHint = "";
@@ -302,6 +304,15 @@ public class AzureSecurityRealm extends SecurityRealm {
     @DataBoundSetter
     public void setDisableGraphIntegration(boolean disableGraphIntegration) {
         this.disableGraphIntegration = disableGraphIntegration;
+    }
+
+    public boolean isEnableGraphIntegrationForAvatars() {
+        return enableGraphIntegrationForAvatars;
+    }
+
+    @DataBoundSetter
+    public void setEnableGraphIntegrationForAvatars(boolean enableGraphIntegrationForAvatars) {
+        this.enableGraphIntegrationForAvatars = enableGraphIntegrationForAvatars;
     }
 
     @DataBoundSetter
@@ -590,7 +601,7 @@ public class AzureSecurityRealm extends SecurityRealm {
 
             SecurityListener.fireAuthenticated2(userDetails);
 
-            if (!isDisableGraphIntegration()) {
+            if (!isDisableGraphIntegration() || isEnableGraphIntegrationForAvatars()) {
                 updateAvatar(userDetails, currentUser);
             }
 
@@ -961,6 +972,10 @@ public class AzureSecurityRealm extends SecurityRealm {
             writer.setValue(String.valueOf(realm.isDisableGraphIntegration()));
             writer.endNode();
 
+            writer.startNode(CONVERTER_ENABLE_GRAPH_INTEGRATION_FOR_AVATARS);
+            writer.setValue(String.valueOf(realm.isEnableGraphIntegrationForAvatars()));
+            writer.endNode();
+
             writer.startNode(CONVERTER_PROMPT_ACCOUNT);
             writer.setValue(String.valueOf(realm.isPromptAccount()));
             writer.endNode();
@@ -1012,6 +1027,9 @@ public class AzureSecurityRealm extends SecurityRealm {
                         break;
                     case CONVERTER_DISABLE_GRAPH_INTEGRATION:
                         realm.setDisableGraphIntegration(Boolean.parseBoolean(value));
+                        break;
+                    case CONVERTER_ENABLE_GRAPH_INTEGRATION_FOR_AVATARS:
+                        realm.setEnableGraphIntegrationForAvatars(Boolean.parseBoolean(value));
                         break;
                     case CONVERTER_PROMPT_ACCOUNT:
                         realm.setPromptAccount(Boolean.parseBoolean(value));

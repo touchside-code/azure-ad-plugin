@@ -78,6 +78,8 @@ class AzureSecurityRealmTest {
             AzureSecurityRealm securityRealm = new AzureSecurityRealm("tenant", "clientId", Secret.fromString(secret), 0);
             securityRealm.setClientCertificate(certificate);
             securityRealm.setCredentialType(credentialType);
+            securityRealm.setDisableGraphIntegration(true);
+            securityRealm.setEnableGraphIntegrationForAvatars(true);
             AzureSecurityRealm.ConverterImpl converter = new AzureSecurityRealm.ConverterImpl();
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             writer = new BinaryStreamWriter(outputStream);
@@ -97,6 +99,8 @@ class AzureSecurityRealmTest {
             }
             // WorkloadIdentity has no secret or certificate to compare
             assertEquals(securityRealm.getCacheDuration(), result.getCacheDuration());
+            assertTrue(result.isDisableGraphIntegration());
+            assertTrue(result.isEnableGraphIntegrationForAvatars());
         } finally {
             if (writer != null) {
                 writer.close();
