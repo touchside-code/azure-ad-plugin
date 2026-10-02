@@ -50,6 +50,8 @@ _Note: You can skip this part and just use the claims returned when authenticati
 | `Group.Read.All` | Application | Search and resolve groups by name or ID |
 | `ProfilePhoto.Read.All` | Application | Fetch user avatar photos _(optional)_ |
 
+To fetch avatars, grant the application `ProfilePhoto.Read.All` and enable **Enable Graph integration for avatars** in the security realm settings. This option allows avatar fetching even when **Disable graph integration** is enabled; other Graph lookups remain disabled.
+
 > **Important:** `offline_access` and `User.Read` (delegated) must **not** be present in the API permissions list. If they exist (often added automatically during app registration), remove them. The `offline_access` scope in particular causes a recurring admin consent prompt on every login because the plugin only uses `id_token` and never needs a refresh token.
 
 #### Option A — Azure Portal (manual)
